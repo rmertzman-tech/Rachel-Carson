@@ -15,39 +15,49 @@
             border-radius: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        .btn {
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 p-4 md:p-8">
 
     <div id="app" class="w-full max-w-7xl mx-auto">
         
-        <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold">PRF Synthesizer (Rachel Carson Demo)</h1>
             <p class="text-gray-600 mt-2">This is a pre-populated example to demonstrate the potential of the PRF analysis.</p>
         </div>
 
-        <!-- Main Workspace -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left Column: Info -->
             <div class="lg:col-span-1 space-y-6">
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">About This Demo</h2>
-                    <p class="text-gray-700 mb-4">The text in these boxes has been pre-filled with reflections from the perspective of Rachel Carson, based on her writings and life.</p>
-                    <p class="text-gray-700">Notice how her reflections connect her scientific observations to a deep ethical framework. This is the level of detail to aim for in your own work.</p>
+                    <p class="text-gray-700 mb-4">The text in these boxes has been pre-filled with reflections from the perspective of Rachel Carson, based on her writings and life's work.</p>
+                    <p class="text-gray-700">Read through the reflections, and then use the button below to load this data into the main Synthesizer app for analysis.</p>
+                    <button id="load-demo-btn" class="btn btn-primary w-full mt-4 py-3 rounded-lg font-semibold">Load this Demo into Synthesizer</button>
                 </div>
                  <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Your Task</h2>
-                    <p class="text-gray-700">Read through these reflections and the sample synthesis. Then, read the AI's feedback to see how it identifies themes and asks deeper questions. Use this as a model for your own PRF project.</p>
+                    <p class="text-gray-700">After loading the data, open the main PRF Synthesizer. You can then use the "Guided Synthesis" feature to have a conversation with the AI tutor about this example, providing a model for your own analysis.</p>
                 </div>
             </div>
 
-            <!-- Right Column: Synthesis & Analysis -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Review of Pre-populated Data</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-[400px] overflow-y-auto p-2 bg-gray-50 rounded-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-[400px] overflow-y-auto p-2 bg-gray-50 rounded-lg">
                         <textarea id="beliefs-display" class="w-full h-full p-2 border rounded-md bg-white" readonly></textarea>
                         <textarea id="rules-display" class="w-full h-full p-2 border rounded-md bg-white" readonly></textarea>
                         <textarea id="ontology-display" class="w-full h-full p-2 border rounded-md bg-white" readonly></textarea>
@@ -60,7 +70,7 @@
                     <h2 class="text-xl font-bold mb-4">Sample Synthesis</h2>
                     <textarea id="synthesis-input" class="w-full h-80 p-3 border border-gray-300 rounded-lg" readonly></textarea>
                     
-                    <div id="ai-analysis-card" class="mt-6">
+                    <div class="mt-6">
                         <h3 class="font-semibold mb-2 text-indigo-700 text-xl">Sample AI Analysis & Feedback</h3>
                         <div id="ai-analysis-display" class="w-full min-h-[100px] p-3 bg-gray-50 border rounded-lg whitespace-pre-wrap"></div>
                     </div>
@@ -83,20 +93,53 @@
             };
 
             const demoData = {
-                beliefs: `(General)\nMy core belief is that humanity is not separate from the natural world, but a part of it. We are subject to the same laws and dependent on the same ecological webs. To believe we can poison a part of that web without poisoning ourselves is a fiction of profound arrogance.\n\n(Specific Challenge: The widespread use of DDT)\nMy central belief about DDT is that its indiscriminate use represents a fundamental misunderstanding of nature. It is seen as a simple solution to a single problem (insects), but in reality, it is a biocide that attacks the entire fabric of life, accumulating in the bodies of animals and humans alike, with consequences that will last for generations.`,
-                rules: `(General)\nA primary rule I live by is to observe with meticulous care and to report with unwavering honesty, no matter how unpopular the truth may be. Science is not merely a collection of facts; it is a method for seeking truth, and that requires absolute integrity.\n\n(Specific Challenge: The widespread use of DDT)\nThe rule I am trying to follow is to make the invisible visible. The damage from these chemicals is slow, cumulative, and often hidden from sight. My duty is to translate the cold language of science into a narrative that every person can understand, to show them the dying robins in their own backyards, so they can grasp the reality of the danger.`,
-                ontology: `(General)\nThe most real things in the world are the intricate relationships between living organisms and their environment. A forest is not just a collection of trees; it is a complex community. A pesticide is not just a chemical; it is a force that ripples through the entire food chain. To ignore these connections is to be blind to the true nature of reality.\n\n(Specific Challenge: The widespread use of DDT)\nIn this situation, the key 'things' that exist are not just the chemical and the pest. They are the contaminated soil, the thinning eggshells of eagles, the altered cells in a living body, and the long-term, generational consequences. The most important reality is the one that unfolds over decades, not the one that offers a quick fix today.`,
-                authenticity: `(General)\nI am a scientist and a writer. My authentic self exists at the intersection of those two identities. I feel most true to myself when I can take complex scientific truths and weave them into a story that awakens a sense of wonder and responsibility in others. To be a scientist without communicating, or a writer without a foundation in fact, would be inauthentic to me.\n\n(Specific Challenge: The widespread use of DDT)\nThe 'mask' I had to wear was one of public combatant. I am by nature a quiet, private person who prefers the solitude of observation. But to be true to my scientific findings, I had to become a public figure, enduring attacks from powerful chemical companies. The personal cost was immense, but to have remained silent would have been a betrayal of my deepest self and my duty to the truth.`,
-                assembly_history: `(General)\nMy formative narrative was shaped by my childhood explorations of the woods and streams of Pennsylvania. My mother instilled in me a sense of wonder for the natural world that became the foundation of my life's work. This early construction of 'nature as a source of wonder' was later modified by my scientific training, which gave me the tools to understand its intricate mechanics. The integration of these two—wonder and rigor—defines my approach.`,
-                future_pull: `(General)\nMy ideal future self is one who has successfully helped humanity to see itself as a responsible steward of the planet, not its conqueror. The capability I must develop is not just scientific, but moral and persuasive—the ability to awaken the 'sense of wonder' in others so they feel a personal obligation to protect the natural world.\n\n(Specific Challenge: The widespread use of DDT)\nIf I handle this challenge in my ideal way, the positive ripple effect will be the creation of a new public consciousness. It will lead to the establishment of environmental protection agencies and the understanding that human health and environmental health are inextricably linked. My legacy would be to have helped forge a new 'constructor network' of citizens, scientists, and policymakers who work together to make decisions with a long-term, ecological perspective.`,
-                synthesis: `My personal reality framework is grounded in the ontological belief that the world is a single, interconnected web of life. This is not a poetic metaphor; it is a scientific fact. This core belief, formed during my 'assembly history' of childhood wonder and scientific training, gives rise to a primary rule: to observe with care and report with honesty.\n\nThis framework created a profound 'temporal incoherence' when I was faced with the widespread use of DDT. The prevailing narrative treated nature as a simple machine to be controlled, which was in direct conflict with my understanding of its complex reality. To remain authentic to my core beliefs, I had to challenge this narrative, even though it forced me into a public role that was at odds with my private nature.\n\nMy 'future pull' is the vision of a world where this ecological consciousness is the norm. The work of writing "Silent Spring" was therefore a necessary act of 'legacy construction'—an attempt to build a new awareness that could protect the future. My synthesis is that true scientific integrity is not just about discovering facts; it is about accepting the ethical responsibility that comes with that knowledge.`,
-                ai: `Thank you for these detailed and powerful reflections. Your framework is exceptionally coherent and demonstrates a deep alignment between your personal history, your scientific work, and your ethical commitments.\n\n**Key Themes:**\n1.  **Interconnectedness as a Foundational Truth:** Your core belief in the interconnectedness of all life is not just a value, but the central organizing principle of your entire framework. It informs your scientific observations, your ethical rules, and your vision for the future.\n2.  **Science as a Moral Vocation:** You frame the practice of science not as a dispassionate activity, but as a profound ethical duty. For you, the act of observing honestly and communicating clearly is a moral imperative, especially when the truth is inconvenient.\n3.  **Authenticity Through Necessary Sacrifice:** You identify a powerful tension between your private nature and the public role you had to assume. Your authenticity was not found in comfort, but in accepting the personal cost of acting in alignment with your deepest convictions.\n\n**Potential Tensions:**\n- Your framework is built on a deep reverence for the slow, natural processes of the world. How do you maintain hope and continue your work when faced with the rapid, often destructive, pace of human technological development that seems to operate on a completely different timescale?\n\n**A Question for Deeper Synthesis:**\n- You speak of translating the 'cold language of science into a narrative.' Given that your own 'assembly history' was rooted in a personal sense of wonder, how essential is that emotional, non-rational connection to nature for creating a lasting and effective environmental ethic in others?`
+                beliefs: `My core belief is that humanity is not separate from the natural world, but a part of it. We are subject to the same ecological laws as every other living creature. A second, related belief is in the "precautionary principle": that we should not introduce powerful new chemicals into the environment without fully understanding their long-term consequences. The burden of proof should be on the creators of these substances to prove they are safe, not on the public to prove they are harmful after the damage is done.`,
+                rules: `A primary rule I followed was to "let the evidence speak for itself." My work was not based on emotion, but on meticulous scientific research. I made it a rule to present complex scientific truths in clear, accessible language so that any citizen could understand the stakes. Another rule was to never be silenced by powerful interests. When the chemical industry attacked my work, my rule was to stand by my research and trust in the public's ability to recognize the truth when presented with the facts.`,
+                ontology: `My ontology viewed the world as a complex, interconnected web of life. For me, a forest, a stream, or a bird was not just a resource to be managed, but a part of a delicate, interdependent system. The "real" cost of a pesticide like DDT was not just dead insects, but a cascade of effects: poisoned birds, contaminated water, and sick children. This holistic view of reality was fundamental to my understanding. What was "real" was the connection between things.`,
+                authenticity: `For me, authenticity meant aligning my private passion for nature with my public role as a scientist and writer. It would have been inauthentic to possess the scientific knowledge of the dangers of pesticides and remain silent. My authentic self was the one who spoke truth to power, even when it was difficult and came at great personal cost. The quiet, reserved person I was in private life had to find the courage to become a public advocate because my core values demanded it. Authenticity was the act of bridging that gap.`,
+                assembly_history: `My assembly history began with a childhood spent exploring the woods and streams of Pennsylvania. My mother instilled in me a deep love and "sense of wonder" for the natural world. This was coupled with a rigorous scientific education, culminating in a master's degree in zoology. This fusion of a poet's heart and a scientist's mind was the critical event in my formation. My early career at the U.S. Fish and Wildlife Service gave me a firsthand view of how government and industry were failing to protect the environment, solidifying my resolve to act.`,
+                future_pull: `My 'future pull' was the vision of a world where humanity lived in harmony with nature, not in a state of war against it. I envisioned a future where environmental literacy was a basic part of education, and where public policy was guided by a long-term ecological conscience. This vision of a sustainable future created a present constraint on my work, compelling me to write "Silent Spring" not just as a scientific report, but as a moral call to action to preserve that future for generations to come.`,
+                synthesis: `My framework is built on the core belief that humanity is a vulnerable part of a vast, interconnected web of life. This is not a mystical idea, but a scientific reality. This ontological commitment directly informs my primary rule: to rigorously investigate and clearly communicate the unintended consequences of our actions on this web.\n\nMy personal authenticity was found in the act of bridging my private love for nature, forged in my childhood, with my public responsibility as a scientist. To know the truth about a danger like DDT and to remain silent would have been the ultimate betrayal of my identity. Therefore, my work was an act of alignment. The 'future pull' of a sustainable world created a moral imperative to challenge the powerful chemical industry, despite the personal attacks. My synthesis is this: true scientific integrity is not just about collecting facts, but about having the courage to defend those facts in the public square, especially when they speak to the preservation of life itself.`,
+                ai: `Thank you for these powerful and coherent reflections. Your framework reveals a deep integration of scientific rigor and moral courage.\n\n**Key Themes:**\n1.  **Interconnection as a Core Principle:** A recurring theme is the idea of the world as an interconnected "web of life." This is not just a belief, but the central pillar of your ontology, which informs your scientific ethics and rules for action.\n2.  **Truth to Power:** You consistently frame your role as that of a truth-teller. Your authenticity is tied to the act of communicating difficult scientific truths to the public, even in the face of powerful opposition.\n3.  **Science as a Moral Calling:** Your assembly history shows a fusion of a deep personal love for nature with rigorous scientific training. This combination transformed your profession from a simple job into a moral vocation.\n\n**Potential Tensions:**\n- You hold a deep belief in the power of scientific evidence to persuade the public. How did you reconcile this with the reality that powerful corporate and political interests often work to actively distort or ignore that evidence for their own gain? Was evidence alone truly enough?\n\n**A Question for Deeper Synthesis:**\n- You state that humanity is a part of nature, not separate from it. If this is true, is environmental destruction not just a bad policy, but a form of societal self-harm? How might our ethical and legal systems change if we truly saw polluting a river as poisoning ourselves?`
             };
 
+            const loadDemoBtn = document.getElementById('load-demo-btn');
+            const DATA_KEYS = {
+                beliefs: 'prf_beliefs_data',
+                rules: 'prf_rules_data',
+                ontology: 'prf_ontology_data',
+                authenticity: 'prf_authenticity_data',
+                assembly_history: 'prf_assembly_history_data',
+                future_pull: 'prf_future_pull_data'
+            };
+
+            function showMessage(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                let bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+                toast.className = `fixed top-5 left-1/2 -translate-x-1/2 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.style.opacity = '0', 2700);
+                setTimeout(() => toast.remove(), 3000);
+            }
+            
+            // Populate the display boxes on page load
             Object.keys(displays).forEach(key => {
                 if (demoData[key]) {
                     displays[key].value = demoData[key];
                     displays[key].textContent = demoData[key];
+                }
+            });
+
+            loadDemoBtn.addEventListener('click', () => {
+                try {
+                    Object.keys(DATA_KEYS).forEach(key => {
+                        localStorage.setItem(DATA_KEYS[key], demoData[key]);
+                    });
+                    showMessage('Demo data has been successfully saved to your browser. You can now load it in the main PRF Synthesizer app.');
+                } catch (e) {
+                    console.error("Error saving to localStorage:", e);
+                    showMessage('Could not save demo data. Your browser may be in private mode or have storage disabled.', 'error');
                 }
             });
         });
